@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#c9d8ff" />
+    <meta name="description" content="和棉棉兔一起玩的中文玩偶计算器" />
+    <title>玩偶计算器 · 棉棉兔</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="game" id="game" data-doll="rabbit">
+      <h1 class="sr-only">玩偶计算器</h1>
+      <div class="rays" aria-hidden="true"></div>
+      <canvas id="backdropCanvas" aria-hidden="true"></canvas>
+      <div class="sparkle-field" aria-hidden="true"></div>
+      <div class="twinkles" aria-hidden="true"></div>
+
+      <section class="hud" aria-label="游戏进度">
+        <div class="hud-row">
+          <div class="progress-dots" id="progressDots" aria-label="共十题"></div>
+          <div class="goal-pill"><span>已用时间</span><strong id="timer">0:00</strong></div>
+          <button class="sound-button" id="soundButton" type="button" aria-label="关闭音效" aria-pressed="true">♫</button>
+        </div>
+        <div class="hud-row hud-row-second">
+          <div class="tallies">
+            <span class="tally">答对 <strong id="correctCount">0</strong><small>/10</small></span>
+            <span class="tally">再试 <strong id="missCount">0</strong></span>
+          </div>
+          <div class="combo-pill" id="comboPill" aria-live="polite" hidden><strong id="comboCount">2</strong> 连击!</div>
+          <div class="joy-pill"><span>快乐值</span><strong id="joyCount">0</strong></div>
+          <button class="settings-button" id="settingsButton" type="button" aria-label="打开设置">⚙</button>
+        </div>
+      </section>
+
+      <section class="stage" id="stage" aria-label="棉棉兔和星星玩偶">
+        <svg class="bunting" viewBox="0 0 500 45" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M-8 5 Q250 49 508 5" fill="none" stroke="#182047" stroke-width="2.5" stroke-linecap="round"/>
+          <g stroke="#182047" stroke-width="2" stroke-linejoin="round">
+            <path d="M30 10h21L41 25z" fill="#ff89b8"/><path d="M70 17h21L80 34z" fill="#5c7dff"/>
+            <path d="M110 22h21l-11 16z" fill="#ffe58a"/><path d="M150 25h21l-10 16z" fill="#b4ecd8"/>
+            <path d="M190 28h21l-10 15z" fill="#b999ff"/><path d="M230 29h21l-10 15z" fill="#ff89b8"/>
+            <path d="M270 28h21l-10 15z" fill="#5c7dff"/><path d="M310 25h21l-10 16z" fill="#ffe58a"/>
+            <path d="M350 22h21l-11 16z" fill="#8ce7d1"/><path d="M390 17h21l-10 17z" fill="#b999ff"/>
+            <path d="M430 10h21l-10 15z" fill="#ff89b8"/>
+          </g>
+        </svg>
+        <div class="spotlight spotlight-left" aria-hidden="true"></div>
+        <div class="spotlight spotlight-right" aria-hidden="true"></div>
+        <div class="beat-rings" aria-hidden="true"></div>
+        <div class="stage-glow" aria-hidden="true"></div>
+        <div class="plush-group" id="plushGroup">
+          <div class="star-friend" aria-hidden="true"><span class="star-face">•ᴗ•</span></div>
+          <svg class="plush" viewBox="0 0 240 228" role="img" aria-label="原创玩偶棉棉兔">
+            <g class="doll-variant" data-doll="rabbit">
+            <g stroke="#1b2048" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Long ears and little stitched patches give this rabbit its own silhouette. -->
+              <path d="M84 88 C58 63 53 8 72 5 C91 2 100 43 105 72 Z" fill="#fff8ee"/>
+              <path d="M78 66 C66 47 65 17 75 16 C84 17 87 42 93 59" fill="#f7a4c7" stroke-width="2"/>
+              <path d="M147 73 C153 45 167 2 187 9 C205 16 184 72 162 90 Z" fill="#fff8ee"/>
+              <path d="M160 61 C166 37 177 18 185 21 C191 27 175 56 167 66" fill="#f7a4c7" stroke-width="2"/>
+              <ellipse cx="120" cy="207" rx="81" ry="8" fill="#7086c1" opacity=".23" stroke="none"/>
+              <path d="M81 172 Q67 174 63 190 Q59 204 76 204 L93 191" fill="#fff8ee"/>
+              <path d="M159 172 Q175 177 178 193 Q179 204 163 205 L146 190" fill="#fff8ee"/>
+              <path d="M79 159 C69 170 72 195 88 203 C106 213 139 213 155 202 C170 191 168 169 157 155 Z" fill="#9de7d8"/>
+              <path d="M87 185 Q120 198 153 184 L151 201 Q121 217 88 202 Z" fill="#69cdbb" stroke-width="2.2"/>
+              <path d="M83 173 Q100 164 105 178 M156 173 Q140 164 135 178" fill="none" stroke="#458f9d" stroke-width="3"/>
+              <path d="M108 180 L120 171 L132 180 L128 194 L112 194 Z" fill="#ffe176" stroke-width="2.3"/>
+              <path d="M120 177 L123 183 L130 184 L125 189 L126 196 L120 192 L114 196 L115 189 L110 184 L117 183 Z" fill="#fff8d7" stroke-width="1.5"/>
+              <ellipse cx="120" cy="111" rx="75" ry="67" fill="#fff8ee"/>
+              <path d="M58 92 Q46 106 48 122" fill="none" stroke="#e7cbbf" stroke-width="2"/>
+              <path d="M183 92 Q193 106 191 122" fill="none" stroke="#e7cbbf" stroke-width="2"/>
+              <path d="M92 68 Q119 61 147 69" fill="none" stroke="#efe0d1" stroke-width="2"/>
+              <ellipse cx="87" cy="132" rx="13" ry="9" fill="#ffb5cf" stroke="none" opacity=".85"/>
+              <ellipse cx="153" cy="132" rx="13" ry="9" fill="#ffb5cf" stroke="none" opacity=".85"/>
+              <path d="M94 105 Q98 99 102 105 M138 105 Q142 99 146 105" fill="none" stroke-width="4"/>
+              <path d="M115 116 Q120 121 125 116 Q120 112 115 116 Z" fill="#f790ac" stroke-width="2"/>
+              <path d="M120 119 Q119 129 111 130 M120 119 Q121 129 129 130" fill="none" stroke-width="2.6"/>
+              <path d="M61 117 L76 119 M62 124 L76 123 M164 119 L179 117 M164 123 L178 125" fill="none" stroke="#b8a79f" stroke-width="1.5"/>
+              <path d="M67 153 L78 149 M162 149 L174 153" fill="none" stroke="#e6c9bd" stroke-width="1.5"/>
+              <path d="M88 195 Q78 195 76 203 Q77 211 94 213 Q105 213 108 202 Z" fill="#6d8de9"/>
+              <path d="M152 195 Q162 195 164 203 Q163 211 146 213 Q135 213 132 202 Z" fill="#6d8de9"/>
+              <path d="M75 73 Q70 66 73 63 M169 77 Q178 73 182 64" fill="none" stroke="#b07f9a" stroke-width="1.5" stroke-dasharray="3 4"/>
+            </g>
+            <path d="M116 48 Q120 39 124 48 Q132 43 132 54 Q122 59 119 59 Q107 54 108 48 Q110 44 116 48Z" fill="#ffe17a" stroke="#1b2048" stroke-width="2.5"/>
+            </g>
+            <g class="doll-variant" data-doll="bear" stroke="#1b2048" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="120" cy="207" rx="80" ry="8" fill="#7086c1" opacity=".23" stroke="none"/>
+              <circle cx="67" cy="62" r="27" fill="#d89665"/><circle cx="173" cy="62" r="27" fill="#d89665"/>
+              <circle cx="67" cy="62" r="14" fill="#ffbbab" stroke-width="2"/><circle cx="173" cy="62" r="14" fill="#ffbbab" stroke-width="2"/>
+              <path d="M81 157 Q68 171 75 195 Q85 211 120 211 Q155 211 165 195 Q172 171 159 157Z" fill="#ffe4a5"/>
+              <path d="M83 174 Q120 189 157 174 L155 201 Q120 216 85 201Z" fill="#8ed1ef"/>
+              <path d="M89 174 L92 192 M151 174 L148 192" fill="none" stroke="#4a95bd" stroke-width="5"/>
+              <circle cx="120" cy="188" r="8" fill="#fff6d3" stroke-width="2"/>
+              <ellipse cx="120" cy="110" rx="73" ry="67" fill="#f4c58e"/>
+              <path d="M69 77 Q120 39 171 77" fill="none" stroke="#ffe1b5" stroke-width="4"/>
+              <ellipse cx="88" cy="132" rx="13" ry="9" fill="#ff9fa2" stroke="none" opacity=".8"/>
+              <ellipse cx="152" cy="132" rx="13" ry="9" fill="#ff9fa2" stroke="none" opacity=".8"/>
+              <path d="M94 103 Q98 98 103 103 M137 103 Q142 98 147 103" fill="none" stroke-width="4"/>
+              <ellipse cx="120" cy="128" rx="28" ry="20" fill="#fff2dc" stroke-width="2"/>
+              <path d="M114 120 Q120 115 126 120 Q124 126 120 127 Q116 126 114 120Z" fill="#9e5a62" stroke-width="2"/>
+              <path d="M120 127 Q119 135 112 135 M120 127 Q121 135 128 135" fill="none" stroke-width="2.5"/>
+              <path d="M85 194 Q73 194 72 203 Q74 212 91 213 Q103 213 105 202Z" fill="#eab06f"/>
+              <path d="M155 194 Q167 194 168 203 Q166 212 149 213 Q137 213 135 202Z" fill="#eab06f"/>
+              <path d="M109 48 Q120 36 131 48 L126 60 L114 60Z" fill="#fff0a6" stroke-width="2.5"/>
+            </g>
+            <g class="doll-variant" data-doll="cat" stroke="#1b2048" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+              <ellipse cx="120" cy="207" rx="80" ry="8" fill="#7086c1" opacity=".23" stroke="none"/>
+              <path d="M165 178 Q195 158 200 181 Q204 198 185 198" fill="none" stroke="#1b2048" stroke-width="18"/>
+              <path d="M165 178 Q195 158 200 181 Q204 198 185 198" fill="none" stroke="#e9f1ff" stroke-width="12"/>
+              <path d="M78 90 L53 30 Q50 20 61 25 L103 54Z" fill="#e9f1ff"/>
+              <path d="M162 90 L187 30 Q190 20 179 25 L137 54Z" fill="#e9f1ff"/>
+              <path d="M74 72 L63 42 L91 61Z M166 72 L177 42 L149 61Z" fill="#ffafc7" stroke-width="2"/>
+              <path d="M81 157 Q69 170 75 195 Q85 210 120 210 Q155 210 165 195 Q171 170 159 157Z" fill="#e9f1ff"/>
+              <path d="M82 173 Q120 190 158 173 L156 202 Q120 216 84 202Z" fill="#b6a7ef"/>
+              <path d="M86 177 Q120 198 154 177" fill="none" stroke="#8c7acb" stroke-width="2"/>
+              <path d="M110 187 L120 177 L130 187 L120 198Z" fill="#fff0a6" stroke-width="2.2"/>
+              <ellipse cx="120" cy="111" rx="73" ry="66" fill="#e9f1ff"/>
+              <path d="M72 83 Q120 49 168 83" fill="none" stroke="#fff" stroke-width="4"/>
+              <ellipse cx="87" cy="132" rx="12" ry="8" fill="#ffbad5" stroke="none"/>
+              <ellipse cx="153" cy="132" rx="12" ry="8" fill="#ffbad5" stroke="none"/>
+              <path d="M95 104 Q99 99 103 104 M137 104 Q141 99 145 104" fill="none" stroke-width="4"/>
+              <path d="M114 118 Q120 113 126 118 Q120 125 114 118Z" fill="#f691b0" stroke-width="2"/>
+              <path d="M120 122 Q119 131 112 131 M120 122 Q121 131 128 131" fill="none" stroke-width="2.5"/>
+              <path d="M58 117 L78 120 M58 126 L78 124 M162 120 L182 117 M162 124 L182 126" fill="none" stroke-width="2"/>
+              <path d="M85 194 Q73 194 72 203 Q74 212 91 213 Q103 213 105 202Z" fill="#a8bde9"/>
+              <path d="M155 194 Q167 194 168 203 Q166 212 149 213 Q137 213 135 202Z" fill="#a8bde9"/>
+              <path d="M109 57 Q96 46 97 57 Q99 68 116 65 L120 59 Q124 68 141 65 Q144 46 131 57 L120 59Z" fill="#76d9d2" stroke-width="2.5"/>
+              <circle cx="120" cy="60" r="5" fill="#ffe590" stroke-width="2"/>
+            </g>
+          </svg>
+        </div>
+        <svg class="ground" viewBox="0 0 460 12" preserveAspectRatio="none" aria-hidden="true"><path d="M5 7 Q120 2 230 7 T455 7" fill="none" stroke="#1b2048" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </section>
+
+      <section class="question-card" id="questionCard" aria-label="计算题">
+        <div class="card-heading"><span class="category" id="category">减法小练习</span><strong id="questionNumber">第 1 题</strong></div>
+        <div class="equation" id="equation" aria-label="14 减 5 等于多少">
+          <span id="leftNumber">14</span><span class="operator" id="operator">−</span><span id="rightNumber">5</span><span class="operator">=</span><span class="answer" id="answerSlots"></span>
+        </div>
+        <p class="feedback" id="feedback" role="status" aria-live="polite">点按数字，帮棉棉兔找答案</p>
+        <div class="success-stamp" id="successStamp" aria-hidden="true">答对啦!</div>
+      </section>
+
+      <section class="keypad" aria-label="数字键盘" id="keypad">
+        <button type="button" data-digit="7">7</button><button type="button" data-digit="8">8</button><button type="button" data-digit="9">9</button>
+        <button type="button" data-digit="4">4</button><button type="button" data-digit="5">5</button><button type="button" data-digit="6">6</button>
+        <button type="button" data-digit="1">1</button><button type="button" data-digit="2">2</button><button type="button" data-digit="3">3</button>
+        <button type="button" class="delete-key" data-action="delete" aria-label="删除错误数字">⌫</button><button type="button" class="zero-key" data-digit="0">0</button>
+      </section>
+
+      <svg class="arm-layer" id="armLayer" aria-hidden="true">
+        <g class="arm" data-side="left"><path class="arm-outline"/><path class="arm-fill"/><circle class="arm-hand" r="8"/><g class="held-token" visibility="hidden"><circle r="17"/><text text-anchor="middle" dominant-baseline="central"></text></g></g>
+        <g class="arm" data-side="right"><path class="arm-outline"/><path class="arm-fill"/><circle class="arm-hand" r="8"/><g class="held-token" visibility="hidden"><circle r="17"/><text text-anchor="middle" dominant-baseline="central"></text></g></g>
+      </svg>
+
+      <div class="impact-flash" aria-hidden="true"></div>
+      <div class="settings-overlay" id="settingsOverlay" hidden>
+        <section class="settings-panel" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+          <div class="settings-heading">
+            <div><p class="settings-eyebrow">和棉棉兔一起玩</p><h2 id="settingsTitle">游戏设置 ✦</h2></div>
+            <button type="button" class="settings-close" id="settingsClose" aria-label="关闭设置">×</button>
+          </div>
+          <p class="settings-intro">选择小朋友的年龄，题目会更合适。</p>
+          <div class="age-options" role="group" aria-label="选择年龄">
+            <button type="button" class="age-option" data-age="4-5" aria-pressed="false"><span class="age-icon">★</span><span class="age-copy"><strong>4–5 岁</strong><small>10 以内加减法</small></span><span class="age-check" aria-hidden="true">✓</span></button>
+            <button type="button" class="age-option" data-age="6-7" aria-pressed="true"><span class="age-icon">✿</span><span class="age-copy"><strong>6–7 岁</strong><small>20 以内加减法</small></span><span class="age-check" aria-hidden="true">✓</span></button>
+            <button type="button" class="age-option" data-age="8+" aria-pressed="false"><span class="age-icon">✦</span><span class="age-copy"><strong>8 岁以上</strong><small>100 以内加减法</small></span><span class="age-check" aria-hidden="true">✓</span></button>
+          </div>
+          <h3 class="doll-heading">选择玩偶 <small>随时切换</small></h3>
+          <div class="doll-options" role="group" aria-label="选择玩偶">
+            <button type="button" class="doll-option" data-doll="rabbit" aria-pressed="true">
+              <svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="21" cy="17" rx="8" ry="17" fill="#fff8ee" stroke="#1b2048" stroke-width="2"/><ellipse cx="43" cy="17" rx="8" ry="17" fill="#fff8ee" stroke="#1b2048" stroke-width="2"/><circle cx="32" cy="40" r="22" fill="#fff8ee" stroke="#1b2048" stroke-width="2"/><circle cx="25" cy="39" r="2" fill="#1b2048"/><circle cx="39" cy="39" r="2" fill="#1b2048"/><circle cx="32" cy="46" r="3" fill="#f790ac"/></svg>
+              <strong>棉棉兔</strong><span aria-hidden="true">✓</span>
+            </button>
+            <button type="button" class="doll-option" data-doll="bear" aria-pressed="false">
+              <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="17" cy="20" r="10" fill="#d89665" stroke="#1b2048" stroke-width="2"/><circle cx="47" cy="20" r="10" fill="#d89665" stroke="#1b2048" stroke-width="2"/><circle cx="32" cy="39" r="23" fill="#f4c58e" stroke="#1b2048" stroke-width="2"/><circle cx="25" cy="38" r="2" fill="#1b2048"/><circle cx="39" cy="38" r="2" fill="#1b2048"/><ellipse cx="32" cy="47" rx="9" ry="6" fill="#fff2dc"/><circle cx="32" cy="45" r="3" fill="#9e5a62"/></svg>
+              <strong>布丁熊</strong><span aria-hidden="true">✓</span>
+            </button>
+            <button type="button" class="doll-option" data-doll="cat" aria-pressed="false">
+              <svg viewBox="0 0 64 64" aria-hidden="true"><path d="M10 34 L14 7 L29 22 M54 34 L50 7 L35 22" fill="#e9f1ff" stroke="#1b2048" stroke-width="2" stroke-linejoin="round"/><circle cx="32" cy="40" r="22" fill="#e9f1ff" stroke="#1b2048" stroke-width="2"/><circle cx="25" cy="39" r="2" fill="#1b2048"/><circle cx="39" cy="39" r="2" fill="#1b2048"/><circle cx="32" cy="45" r="3" fill="#f691b0"/><path d="M14 44 L22 46 M42 46 L50 44" stroke="#1b2048" stroke-width="2"/></svg>
+              <strong>泡泡猫</strong><span aria-hidden="true">✓</span>
+            </button>
+          </div>
+          <p class="settings-note" id="settingsNote">切换年龄会重新开始十题；玩偶立即切换</p>
+          <button type="button" class="settings-done" id="settingsDone">回到游戏</button>
+        </section>
+      </div>
+      <div class="result-overlay" id="resultOverlay" hidden>
+        <div class="result-panel" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+          <div class="result-star">✦</div>
+          <p class="result-eyebrow">十题挑战完成</p>
+          <h2 id="resultTitle">你和棉棉兔太棒啦！</h2>
+          <p class="result-score"><strong id="finalJoy">0</strong><span>快乐值</span></p>
+          <div class="result-stats"><span>答对 <strong id="finalCorrect">10</strong> 题</span><span>再试 <strong id="finalMiss">0</strong> 次</span><span>用时 <strong id="finalTime">0:00</strong></span></div>
+          <button type="button" id="replayButton" class="replay-button">再玩一次 ✦</button>
+        </div>
+      </div>
+      <canvas id="confettiCanvas" aria-hidden="true"></canvas>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
